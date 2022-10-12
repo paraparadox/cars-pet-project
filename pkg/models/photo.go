@@ -1,8 +1,9 @@
 package models
 
+import "gorm.io/gorm"
+
 type Photo struct {
-	Path      string
-	Order     int
-	CreatedAt string
-	UpdatedAt string
+	gorm.Model
+	Path  string
+	Order int
 }

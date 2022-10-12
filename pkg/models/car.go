@@ -1,7 +1,10 @@
 package models
 
+import "gorm.io/gorm"
+
 type Car struct {
-	Model             string
+	gorm.Model
+	ModelName         string
 	TopSpeed          int
 	ZeroToHundredTime int
 	FuelTankCapacity  int
@@ -9,6 +12,4 @@ type Car struct {
 	Width             int
 	Height            int
 	Weight            int
-	CreatedAt         string
-	UpdatedAt         string
 }
