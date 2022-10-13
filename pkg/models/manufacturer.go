@@ -7,4 +7,7 @@ type Manufacturer struct {
 	Title          string
 	FoundationYear int
 	Logo           string
+
+	// hasMany
+	Cars []Car
 }

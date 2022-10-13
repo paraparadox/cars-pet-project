@@ -7,4 +7,7 @@ type Engine struct {
 	Type              string
 	NumberOfCylinders int
 	FuelType          string
+
+	// todo: complete belongsTo
+	CarID uint
 }
