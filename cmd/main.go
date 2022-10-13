@@ -39,7 +39,6 @@ func main() {
 	db, err := DBInit()
 	if err != nil {
 		log.Fatalln(err)
-		return
 	}
 
 	router := gin.Default()
