@@ -49,9 +49,18 @@ func main() {
 	{
 		manufacturers.GET("/", hndlrs.ManufacturersIndex)
 		manufacturers.POST("/", hndlrs.ManufacturersStore)
-		manufacturers.GET("/:id", hndlrs.ManufacturersShow)
-		manufacturers.PUT("/:id", hndlrs.ManufacturersUpdate)
-		manufacturers.DELETE("/:id", hndlrs.ManufacturersDelete)
+		manufacturers.GET("/:manufacturerID", hndlrs.ManufacturersShow)
+		manufacturers.PUT("/:manufacturerID", hndlrs.ManufacturersUpdate)
+		manufacturers.DELETE("/:manufacturerID", hndlrs.ManufacturersDelete)
+
+		//cars := manufacturers.Group("/:manufacturerID/cars")
+		//{
+		//	cars.GET("/", hndlrs.CarsIndex)
+		//	cars.POST("/", hndlrs.CarsStore)
+		//	cars.GET("/:carID", hndlrs.CarsShow)
+		//	cars.PUT("/:carID", hndlrs.CarsUpdate)
+		//	cars.DELETE("/:carID", hndlrs.CarsDelete)
+		//}
 	}
 
 	log.Println("Starting server at :4000")

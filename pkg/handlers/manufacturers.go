@@ -8,6 +8,7 @@ import (
 	"strconv"
 )
 
+// ManufacturersIndex returns all the existing manufacturers
 func (h *Handler) ManufacturersIndex(c *gin.Context) {
 	var manufacturers []models.Manufacturer
 	result := h.DB.Find(&manufacturers)
@@ -22,6 +23,7 @@ func (h *Handler) ManufacturersIndex(c *gin.Context) {
 	c.JSON(http.StatusOK, manufacturers)
 }
 
+// ManufacturersStore creates a single manufacturer
 func (h *Handler) ManufacturersStore(c *gin.Context) {
 	var manufacturer models.Manufacturer
 
@@ -47,13 +49,15 @@ func (h *Handler) ManufacturersStore(c *gin.Context) {
 	c.JSON(http.StatusCreated, manufacturer)
 }
 
+// ManufacturersShow returns a single existing manufacturer
 func (h *Handler) ManufacturersShow(c *gin.Context) {
-	manufacturerID, err := strconv.Atoi(c.Param("id"))
+	manufacturerID, err := strconv.Atoi(c.Param("manufacturerID"))
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "Bad identifier",
 		})
+		return
 	}
 
 	var manufacturer models.Manufacturer
@@ -70,8 +74,9 @@ func (h *Handler) ManufacturersShow(c *gin.Context) {
 	c.JSON(http.StatusOK, manufacturer)
 }
 
+// ManufacturersUpdate updates a single existing manufacturer
 func (h *Handler) ManufacturersUpdate(c *gin.Context) {
-	manufacturerID, err := strconv.Atoi(c.Param("id"))
+	manufacturerID, err := strconv.Atoi(c.Param("manufacturerID"))
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -106,8 +111,9 @@ func (h *Handler) ManufacturersUpdate(c *gin.Context) {
 	c.JSON(http.StatusOK, manufacturer)
 }
 
+// ManufacturersDelete deletes a single existing manufacturer
 func (h *Handler) ManufacturersDelete(c *gin.Context) {
-	manufacturerID, err := strconv.Atoi(c.Param("id"))
+	manufacturerID, err := strconv.Atoi(c.Param("manufacturerID"))
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{
