@@ -1,7 +1,7 @@
 package models
 
 type Engine struct {
-	ID
+	Identifier
 	Type              string
 	NumberOfCylinders int
 	FuelType          string

@@ -1,7 +1,7 @@
 package models
 
 type Car struct {
-	ID
+	Identifier
 	ModelName         string
 	TopSpeed          int
 	ZeroToHundredTime int

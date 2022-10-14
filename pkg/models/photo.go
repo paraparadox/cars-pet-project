@@ -1,7 +1,7 @@
 package models
 
 type Photo struct {
-	ID
+	Identifier
 	Path  string
 	Order int
 
