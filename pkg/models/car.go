@@ -1,11 +1,7 @@
 package models
 
-import (
-	"gorm.io/gorm"
-)
-
 type Car struct {
-	gorm.Model
+	ID
 	ModelName         string
 	TopSpeed          int
 	ZeroToHundredTime int
@@ -24,4 +20,6 @@ type Car struct {
 
 	// hasMany
 	Photos []Photo
+
+	Timestamps
 }

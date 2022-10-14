@@ -1,13 +1,13 @@
 package models
 
-import "gorm.io/gorm"
-
 type Manufacturer struct {
-	gorm.Model
-	Title          string
-	FoundationYear int
-	Logo           string
+	ID
+	Title          string `binding:"required" json:"title"`
+	FoundationYear int    `binding:"required,numeric,min=1" json:"foundation_year"`
+	Logo           string `binding:"required,url" json:"logo"`
 
 	// hasMany
-	Cars []Car
+	Cars []Car `json:"cars,omitempty"`
+
+	Timestamps
 }

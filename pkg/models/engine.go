@@ -1,13 +1,13 @@
 package models
 
-import "gorm.io/gorm"
-
 type Engine struct {
-	gorm.Model
+	ID
 	Type              string
 	NumberOfCylinders int
 	FuelType          string
 
 	// todo: complete belongsTo
 	CarID uint
+
+	Timestamps
 }

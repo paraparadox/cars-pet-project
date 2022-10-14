@@ -1,13 +1,13 @@
 package models
 
-import "gorm.io/gorm"
-
 type Photo struct {
-	gorm.Model
+	ID
 	Path  string
 	Order int
 
 	// belongsTo
 	CarID uint
 	Car   Car
+
+	Timestamps
 }
