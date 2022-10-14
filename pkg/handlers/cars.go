@@ -11,10 +11,31 @@ import (
 
 // CarsIndex returns all the existing manufacturers
 func (h *Handler) CarsIndex(c *gin.Context) {
-	var cars []models.Car
-	result := h.DB.Preload(clause.Associations).Find(&cars)
+	manufacturerID, err := strconv.Atoi(c.Param("manufacturerID"))
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Bad identifier",
+		})
+		return
+	}
+
+	var manufacturer models.Manufacturer
+
+	result := h.DB.First(&manufacturer, manufacturerID)
 	if result.Error != nil {
 		log.Println(result.Error)
+		c.JSON(http.StatusNotFound, gin.H{
+			"message": "Record not found",
+		})
+		return
+	}
+
+	var cars []models.Car
+
+	err = h.DB.Preload(clause.Associations).Model(&manufacturer).Association("Cars").Find(&cars)
+	if err != nil {
+		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Internal server error",
 		})
@@ -72,6 +93,15 @@ func (h *Handler) CarsStore(c *gin.Context) {
 
 // CarsShow returns a single existing manufacturer
 func (h *Handler) CarsShow(c *gin.Context) {
+	manufacturerID, err := strconv.Atoi(c.Param("manufacturerID"))
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Bad identifier",
+		})
+		return
+	}
+
 	carID, err := strconv.Atoi(c.Param("carID"))
 	if err != nil {
 		log.Println(err)
@@ -81,11 +111,24 @@ func (h *Handler) CarsShow(c *gin.Context) {
 		return
 	}
 
-	var car models.Car
+	var manufacturer models.Manufacturer
 
-	result := h.DB.First(&car, carID)
+	result := h.DB.First(&manufacturer, manufacturerID)
 	if result.Error != nil {
 		log.Println(result.Error)
+		c.JSON(http.StatusNotFound, gin.H{
+			"message": "Record not found",
+		})
+		return
+	}
+
+	var car models.Car
+
+	// todo: look for another ways to check not found record error
+	//err = h.DB.Model(&manufacturer).Association("Cars").Find(&car, carID)
+	result = h.DB.Where("manufacturer_id = ?", manufacturerID).Preload(clause.Associations).Find(&car, carID)
+	if result.Error != nil || result.RowsAffected == 0 {
+		log.Println("Record not found", result.Error)
 		c.JSON(http.StatusNotFound, gin.H{
 			"message": "Record not found",
 		})
