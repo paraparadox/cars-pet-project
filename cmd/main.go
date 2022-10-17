@@ -60,6 +60,14 @@ func main() {
 			cars.GET("/:carID", hndlrs.CarsShow)
 			cars.PUT("/:carID", hndlrs.CarsUpdate)
 			cars.DELETE("/:carID", hndlrs.CarsDelete)
+
+			engine := cars.Group("/:carID/engine")
+			{
+				engine.POST("/", hndlrs.EngineStore)
+				engine.GET("/", hndlrs.EngineShow)
+				engine.PUT("/", hndlrs.EngineUpdate)
+				engine.DELETE("/", hndlrs.EngineDelete)
+			}
 		}
 	}
 
