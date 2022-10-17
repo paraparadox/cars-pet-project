@@ -213,7 +213,7 @@ func (h *Handler) EngineUpdate(c *gin.Context) {
 
 // EngineDelete deletes a single existing manufacturer
 func (h *Handler) EngineDelete(c *gin.Context) {
-	manufacturerID, err := strconv.Atoi(c.Param(POST"manufacturerID"))
+	manufacturerID, err := strconv.Atoi(c.Param("manufacturerID"))
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -254,7 +254,18 @@ func (h *Handler) EngineDelete(c *gin.Context) {
 		return
 	}
 
-	result = h.DB.Delete(&car)
+	var engine models.Engine
+
+	result = h.DB.Where("car_id = ?", carID).Find(&engine)
+	if result.Error != nil || result.RowsAffected == 0 {
+		log.Println("Record not found", result.Error)
+		c.JSON(http.StatusNotFound, gin.H{
+			"message": "Record not found",
+		})
+		return
+	}
+
+	result = h.DB.Delete(&engine)
 	if result.Error != nil {
 		log.Println(result.Error)
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -264,6 +275,6 @@ func (h *Handler) EngineDelete(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Deleted car " + strconv.Itoa(carID),
+		"message": "Deleted engine " + strconv.Itoa(int(engine.ID)),
 	})
 }
