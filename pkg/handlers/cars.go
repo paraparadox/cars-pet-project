@@ -3,6 +3,7 @@ package handlers
 import (
 	"cars-pet-project/pkg/models"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"log"
 	"net/http"
@@ -126,7 +127,15 @@ func (h *Handler) CarsShow(c *gin.Context) {
 
 	// todo: look for another ways to check not found record error
 	//err = h.DB.Model(&manufacturer).Association("Cars").Find(&car, carID)
-	result = h.DB.Where("manufacturer_id = ?", manufacturerID).Preload(clause.Associations).Find(&car, carID)
+	result = h.DB.
+		Where("manufacturer_id = ?", manufacturerID).
+		Preload("Manufacturer").
+		Preload("Engine").
+		Preload("Photos", func(db *gorm.DB) *gorm.DB {
+			return db.Order(`"order"`)
+		}).
+		Find(&car, carID)
+
 	if result.Error != nil || result.RowsAffected == 0 {
 		log.Println("Record not found", result.Error)
 		c.JSON(http.StatusNotFound, gin.H{
