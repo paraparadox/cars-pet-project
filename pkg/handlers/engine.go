@@ -176,7 +176,18 @@ func (h *Handler) EngineUpdate(c *gin.Context) {
 		return
 	}
 
-	err = c.ShouldBindJSON(&car)
+	var engine models.Engine
+
+	result = h.DB.Where("car_id = ?", carID).Find(&engine)
+	if result.Error != nil || result.RowsAffected == 0 {
+		log.Println("Record not found", result.Error)
+		c.JSON(http.StatusNotFound, gin.H{
+			"message": "Record not found",
+		})
+		return
+	}
+
+	err = c.ShouldBindJSON(&engine)
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
@@ -188,7 +199,7 @@ func (h *Handler) EngineUpdate(c *gin.Context) {
 
 	// todo: properly handle such operations in other places too
 	// todo: validate existence of foreign keys
-	result = h.DB.Save(&car)
+	result = h.DB.Save(&engine)
 	if result.Error != nil {
 		log.Println(result.Error)
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -197,12 +208,12 @@ func (h *Handler) EngineUpdate(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, car)
+	c.JSON(http.StatusOK, engine)
 }
 
 // EngineDelete deletes a single existing manufacturer
 func (h *Handler) EngineDelete(c *gin.Context) {
-	manufacturerID, err := strconv.Atoi(c.Param("manufacturerID"))
+	manufacturerID, err := strconv.Atoi(c.Param(POST"manufacturerID"))
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{
