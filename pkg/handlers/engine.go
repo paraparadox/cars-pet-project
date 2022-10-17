@@ -3,13 +3,12 @@ package handlers
 import (
 	"cars-pet-project/pkg/models"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm/clause"
 	"log"
 	"net/http"
 	"strconv"
 )
 
-// EngineStore creates a single manufacturer
+// EngineStore creates a single engine
 func (h *Handler) EngineStore(c *gin.Context) {
 	manufacturerID, err := strconv.Atoi(c.Param("manufacturerID"))
 	if err != nil {
@@ -76,7 +75,7 @@ func (h *Handler) EngineStore(c *gin.Context) {
 	c.JSON(http.StatusCreated, engine)
 }
 
-// EngineShow returns a single existing manufacturer
+// EngineShow returns an engine of specified car
 func (h *Handler) EngineShow(c *gin.Context) {
 	manufacturerID, err := strconv.Atoi(c.Param("manufacturerID"))
 	if err != nil {
@@ -111,7 +110,7 @@ func (h *Handler) EngineShow(c *gin.Context) {
 
 	// todo: look for another ways to check not found record error
 	//err = h.DB.Model(&manufacturer).Association("Engine").Find(&car, carID)
-	result = h.DB.Where("manufacturer_id = ?", manufacturerID).Preload(clause.Associations).Find(&car, carID)
+	result = h.DB.Where("manufacturer_id = ?", manufacturerID).Find(&car, carID)
 	if result.Error != nil || result.RowsAffected == 0 {
 		log.Println("Record not found", result.Error)
 		c.JSON(http.StatusNotFound, gin.H{
@@ -120,7 +119,18 @@ func (h *Handler) EngineShow(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, car)
+	var engine models.Engine
+
+	result = h.DB.Where("car_id = ?", carID).Find(&engine)
+	if result.Error != nil || result.RowsAffected == 0 {
+		log.Println("Record not found", result.Error)
+		c.JSON(http.StatusNotFound, gin.H{
+			"message": "Record not found",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, engine)
 }
 
 // EngineUpdate updates a single existing manufacturer

@@ -7,7 +7,7 @@ type Engine struct {
 	FuelType          string `binding:"required" json:"fuel_type"`
 
 	// todo: complete belongsTo
-	CarID uint
+	CarID uint `json:"car_id"`
 
 	Timestamps
 }
