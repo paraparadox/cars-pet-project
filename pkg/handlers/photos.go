@@ -2,12 +2,15 @@ package handlers
 
 import (
 	"cars-pet-project/pkg/models"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 )
 
 // PhotosIndex gets all the photos of a specified car
@@ -166,6 +169,15 @@ func (h *Handler) PhotosDelete(c *gin.Context) {
 		return
 	}
 
+	photoID, err := strconv.Atoi(c.Param("photoID"))
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Bad identifier",
+		})
+		return
+	}
+
 	var manufacturer models.Manufacturer
 
 	result := h.DB.First(&manufacturer, manufacturerID)
@@ -189,9 +201,9 @@ func (h *Handler) PhotosDelete(c *gin.Context) {
 		return
 	}
 
-	var engine models.Photo
+	var photo models.Photo
 
-	result = h.DB.Where("car_id = ?", carID).Find(&engine)
+	result = h.DB.Where("car_id = ?", carID).Find(&photo, photoID)
 	if result.Error != nil || result.RowsAffected == 0 {
 		log.Println("Record not found", result.Error)
 		c.JSON(http.StatusNotFound, gin.H{
@@ -200,7 +212,12 @@ func (h *Handler) PhotosDelete(c *gin.Context) {
 		return
 	}
 
-	result = h.DB.Delete(&engine)
+	pathSlice := strings.Split(photo.Path, "/")
+	fileName := pathSlice[len(pathSlice)-1]
+	err = os.RemoveAll("assets/cars-photos/" + fileName)
+	fmt.Println(fileName)
+
+	result = h.DB.Delete(&photo)
 	if result.Error != nil {
 		log.Println(result.Error)
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -210,7 +227,7 @@ func (h *Handler) PhotosDelete(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Deleted engine " + strconv.Itoa(int(engine.ID)),
+		"message": "Deleted photo " + strconv.Itoa(photoID),
 	})
 }
 
