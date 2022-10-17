@@ -68,6 +68,14 @@ func main() {
 				engine.PUT("/", hndlrs.EngineUpdate)
 				engine.DELETE("/", hndlrs.EngineDelete)
 			}
+
+			photos := cars.Group("/:carID/photos")
+			{
+				photos.GET("/", hndlrs.PhotosIndex)
+				photos.POST("/", hndlrs.PhotosStore)
+				photos.PUT("/orders", hndlrs.PhotosUpdateOrders)
+				photos.DELETE("/:photoID", hndlrs.PhotosDelete)
+			}
 		}
 	}
 
