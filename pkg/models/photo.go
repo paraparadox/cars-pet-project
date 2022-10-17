@@ -2,12 +2,12 @@ package models
 
 type Photo struct {
 	Identifier
-	Path  string
-	Order int
+	Path  string `json:"path"`
+	Order int    `json:"order"`
 
 	// belongsTo
-	CarID uint
-	Car   Car
+	CarID uint `json:"car_id"`
+	Car   *Car `json:"car,omitempty"`
 
 	Timestamps
 }

@@ -3,8 +3,10 @@ package handlers
 import (
 	"cars-pet-project/pkg/models"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"log"
 	"net/http"
+	"path/filepath"
 	"strconv"
 )
 
@@ -109,18 +111,39 @@ func (h *Handler) PhotosStore(c *gin.Context) {
 		return
 	}
 
-	var engine models.Photo
+	uploadedPhoto, err := c.FormFile("photo")
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Bad request",
+		})
+		return
+	}
+	extension := filepath.Ext(uploadedPhoto.Filename)
+	newFileName := "assets/cars-photos/"
+	newFileName += uuid.New().String() + extension
 
-	result = h.DB.Where("car_id = ?", carID).Find(&engine)
-	if result.Error != nil || result.RowsAffected == 0 {
-		log.Println("Record not found", result.Error)
-		c.JSON(http.StatusNotFound, gin.H{
-			"message": "Record not found",
+	err = c.SaveUploadedFile(uploadedPhoto, newFileName)
+	if err != nil {
+		c.String(http.StatusInternalServerError, "unknown error")
+		return
+	}
+
+	photo := models.Photo{
+		Path:  "http://127.0.0.1:4000/" + newFileName,
+		Order: 0,
+	}
+
+	err = h.DB.Model(&car).Association("Photos").Append(&photo)
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Internal server error",
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, engine)
+	c.JSON(http.StatusCreated, photo)
 }
 
 // PhotosDelete deletes a single existing manufacturer

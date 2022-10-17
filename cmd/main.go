@@ -42,6 +42,7 @@ func main() {
 	}
 
 	router := gin.Default()
+	router.Static("/assets", "./assets")
 	hndlrs := handlers.New(db)
 
 	router.GET("/health-check", hndlrs.HealthCheck)
