@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"cars-pet-project/pkg/models"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"log"
@@ -215,7 +214,6 @@ func (h *Handler) PhotosDelete(c *gin.Context) {
 	pathSlice := strings.Split(photo.Path, "/")
 	fileName := pathSlice[len(pathSlice)-1]
 	err = os.RemoveAll("assets/cars-photos/" + fileName)
-	fmt.Println(fileName)
 
 	result = h.DB.Delete(&photo)
 	if result.Error != nil {
@@ -274,27 +272,33 @@ func (h *Handler) PhotosUpdateOrders(c *gin.Context) {
 		return
 	}
 
-	var engine models.Photo
-
-	result = h.DB.Where("car_id = ?", carID).Find(&engine)
-	if result.Error != nil || result.RowsAffected == 0 {
-		log.Println("Record not found", result.Error)
-		c.JSON(http.StatusNotFound, gin.H{
-			"message": "Record not found",
-		})
-		return
+	var ids struct {
+		PhotosIDs []int `json:"photos_ids"`
 	}
+	err = c.ShouldBindJSON(&ids)
 
-	result = h.DB.Delete(&engine)
-	if result.Error != nil {
-		log.Println(result.Error)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Internal server error",
-		})
-		return
+	for index, photoID := range ids.PhotosIDs {
+		var photo models.Photo
+		result = h.DB.Where("car_id = ?", carID).Find(&photo, photoID)
+		if result.Error != nil || result.RowsAffected == 0 {
+			log.Println("Record not found", result.Error)
+			c.JSON(http.StatusNotFound, gin.H{
+				"message": "Record not found",
+			})
+			return
+		}
+		photo.Order = index
+		result = h.DB.Save(&photo)
+		if result.Error != nil {
+			log.Println(result.Error)
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": "Internal server error",
+			})
+			return
+		}
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Deleted engine " + strconv.Itoa(int(engine.ID)),
+		"message": "Updated the order of photos of a car",
 	})
 }
