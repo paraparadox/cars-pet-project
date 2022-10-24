@@ -55,7 +55,7 @@ You can find request bodies to specific endpoints under the table.
 
 1. Create a manufacturer
 
-```
+```json
 {
     "title": "BMW",
     "foundation_year": 1916,
@@ -65,7 +65,7 @@ You can find request bodies to specific endpoints under the table.
 
 2. Update a manufacturer
 
-```
+```json
 {
     "title": "BMW",
     "foundation_year": 1916,
@@ -75,7 +75,7 @@ You can find request bodies to specific endpoints under the table.
 
 3. Create a car under the manufacturer
 
-```
+```json
 {
     "model_name": "BMW E34 5 Series 525td",
     "top_speed": 194,
@@ -101,7 +101,7 @@ You can use the app as you want. Use any units you prefer.
 
 4. Update a car of the manufacturer
 
-```
+```json
 {
     "model_name": "BMW E34 5 Series 525td",
     "top_speed": 194,
@@ -116,7 +116,7 @@ You can use the app as you want. Use any units you prefer.
 
 5. Create an engine under the car
 
-```
+```json
 {
     "type": "Inline",
     "number_of_cylinders": 6,
@@ -126,7 +126,7 @@ You can use the app as you want. Use any units you prefer.
 
 6. Update an engine of the car
 
-```
+```json
 {
     "type": "Inline",
     "number_of_cylinders": 6,
@@ -136,7 +136,7 @@ You can use the app as you want. Use any units you prefer.
 
 7. Upload a photo to the car (form-data)
 
-```
+```json
 {
     "photo": uploaded file in form-data
 }
@@ -144,7 +144,7 @@ You can use the app as you want. Use any units you prefer.
 
 8. Update the order of the photos of the car
 
-```
+```json
 {
     "photos_ids": [
         12,
