@@ -1,6 +1,10 @@
+## Requirements:
+* Go 1.19
+* Configured PostgreSQL 14.5 database (_put the credentials into the DBInit() function in ./cmd/main.go file_)
+
 ## Database structure:
 
-![img.png](img.png)
+![db-structure.png](db-structure.png)
 
 ## Relations and completion of them:
 
@@ -47,7 +51,7 @@ You can find request bodies to specific endpoints under the table.
 | 8. PUT      | /manufacturers/:manufacturerID/cars/:carID/photos/orders   | Update the order of the photos of the car |
 | DELETE      | /manufacturers/:manufacturerID/cars/:carID/photos/:photoID | Delete a photo of the car                 |
 
-##Request bodies for numbered endpoints above:
+## Request bodies for numbered endpoints above:
 
 1. Create a manufacturer
 
@@ -83,7 +87,9 @@ You can find request bodies to specific endpoints under the table.
     "weight": 1465000
 }
 ```
+
 My choice:
+
 * _Speed is in kilometers/hour_
 * _Time is in milliseconds_
 * _Capacity is in milliliters_
@@ -118,7 +124,7 @@ You can use the app as you want. Use any units you prefer.
 }
 ```
 
-6. 	Update an engine of the car
+6. Update an engine of the car
 
 ```
 {
